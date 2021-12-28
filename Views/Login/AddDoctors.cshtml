@@ -1,0 +1,32 @@
+﻿
+@{
+    @model Book.Models.DoctorModel
+}
+
+<h1>Add Doctors</h1>
+
+<form  asp-controller="Login" method="post" asp-action='doctor'>
+    <div>
+        <label for="uname"><b>Doctor Name</b></label>
+        <input type="text" placeholder="Enter Username" name="Doctor Name " required>
+        <span asp-validation-for="DoctorName" class="text-danger"></span>
+    </div>
+    <div>
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="Password" required>
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div>
+        <label for="psw"><b>Specification</b></label>
+        <input type="text" placeholder="Enter Specification" name="Specification" required>
+        <span asp-validation-for="Specification" class="text-danger"></span>
+    </div>
+    <div>
+        <label for="psw"><b>Email</b></label>
+        <input type="text" placeholder="Enter Email" name="Email" required>
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <button type="submit" >Add</button>
+    <button type="button" class="cancelbtn">Cancel</button>
+</form>
