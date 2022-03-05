@@ -11,7 +11,6 @@ namespace Book.Models
             public string DoctorName { get; set; }
             public string Specification { get; set; }
             public int CreatedBy { get; set; }
-
             public DateTime CreatedOn { get; set; }
 
             public string Password { get; set; }
@@ -30,3 +29,4 @@ namespace Book.Models
 
     }
 }
+

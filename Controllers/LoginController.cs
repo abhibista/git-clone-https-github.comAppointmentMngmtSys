@@ -25,16 +25,21 @@ namespace Book.Controllers
             //_signInManager = signInManager;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Login(String ReturnUrl)
-        {
-            LoginViewModel model = new LoginViewModel
-            {
-                ReturnUrl = ReturnUrl,
-                //LoginWithGoogle = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
-            };
-            return View(model);
-        }
+        // [HttpGet]
+        // public async Task<IActionResult> Login(String ReturnUrl)
+        // {
+        //     LoginViewModel model = new LoginViewModel
+        //     {
+        //         ReturnUrl = ReturnUrl,
+        //         //LoginWithGoogle = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+        //     };
+
+        //     // await _context.Users.AddAsync(User);
+        //     // await _context.SaveChangesAsync();
+
+        //      return View(model);
+        // }
+        
 
         //[HttpPost]
         //public async Task<ActionResult>  EmailPost( )
@@ -89,7 +94,8 @@ namespace Book.Controllers
             //        else
             //        {
             //            return Ok(false);
-            //        } 
+            //        }  
+            
         }
         private string GenerateJSONWebToken(LoginViewModel userInfo)
         {
@@ -117,7 +123,7 @@ namespace Book.Controllers
             return user;
         }
 
-        [HttpPost("doctor")]
+        [HttpPost("api/doctor")]
         public async Task<ActionResult<Doctor>> AddDoctors(DoctorModel model)
         {
             var doctor = new Doctor()
@@ -133,19 +139,17 @@ namespace Book.Controllers
             await _context.Doctors.AddAsync(doctor);
             await _context.SaveChangesAsync();
 
-            return Ok(model);
+            return View(model);
         }
 
-        [HttpGet]
         public ActionResult Index()
         {
             return View();
         }
 
-        [HttpGet]
         public ActionResult AddDoctors()
         {
-            return View("AddDoctors");
+            return View();
         }
 
         public bool ValidatePassword(string plainPassword, string hasedPassword)

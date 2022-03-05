@@ -3,23 +3,11 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-//public class Author
-//{
-//    public int Id { get; set; }
-//    public string FirstName { get; set; }
-//    public string LastName { get; set; }
-
-//    //public List<Article> Articles { get; set; } = new List<Article>();
-//}
-
 public class ArticleContext : DbContext
     {
         public ArticleContext(DbContextOptions<ArticleContext> options)
             : base(options)
         { }
-
-        //public DbSet<Article> Articles { get; set; }
-        //public DbSet<Author> Authors { get; set; }
         public DbSet<User> Users { get; set; }
 
         public DbSet<Doctor> Doctors { get; set; }
@@ -30,14 +18,6 @@ public class ArticleContext : DbContext
 
         protected override void OnModelCreating(ModelBuilder model)
         {
-            //model.Entity<Author>(entity =>
-            //{
-            //    entity.ToTable("authors", "public");
-            //    entity.HasKey(x => x.Id);
-            //    entity.Property(x => x.FirstName).HasColumnName("FirstName");
-            //    entity.Property(x => x.LastName).HasColumnName("LastName");
-            //});
-
             model.Entity<User>(entity =>
             {
                 entity.ToTable("users", "core");

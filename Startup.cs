@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Text;
 
@@ -26,6 +27,7 @@ namespace Book
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSpaStaticFiles(c => c.RootPath = "ClientApp/build");
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(Options =>
                 {
@@ -51,7 +53,7 @@ namespace Book
                        });
                 });
 
-           
+
             //services.AddIdentity<User, IdentityRole>
             //    (options => options.SignIn.RequireConfirmedAccount = true)
             //   .AddUserStore<ArticleContext>()
@@ -59,7 +61,7 @@ namespace Book
 
             services.AddMvc();
             services.AddControllers();
-            services.AddRazorPages();
+            // services.AddRazorPages();
 
             services.AddControllersWithViews();
 
@@ -67,51 +69,56 @@ namespace Book
             services.AddDbContext<ArticleContext>(
                 opts => opts.UseNpgsql(connectionString)
             );
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Book", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseExceptionHandler(appError =>
-            {
-                appError.Run(async context =>
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    context.Response.ContentType = "application/json";
-
-                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextFeature != null)
-                    {
-                        await context.Response.WriteAsync(contextFeature.Error.Message);
-                    }
-                });
-            });
-
-            if (!env.IsDevelopment())
-                app.UseHsts();
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Book v1"));
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-            app.UseRouting();
 
+
+                app.UseExceptionHandler(appError =>
+                {
+                    appError.Run(async context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        context.Response.ContentType = "application/json";
+
+                        var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                        if (contextFeature != null)
+                        {
+                            await context.Response.WriteAsync(contextFeature.Error.Message);
+                        }
+                    });
+                });
+                app.UseHsts();
+
+            }
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            // app.UseSwaggerUI(c =>
+            // {
+            //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Book V2");
+            // });
+
+
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
+            app.UseSpa(spa =>
             {
-                endpoints.MapControllers();
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                spa.Options.SourcePath = "ClientApp";
             });
         }
     }
